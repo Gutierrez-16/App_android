@@ -21,4 +21,4 @@ MyApplication es una aplicación de Android diseñada para gestionar una base de
 1. Clona este repositorio en tu máquina local:
 
 ```sh
-git clone https://github.com/tu_usuario/MyApplication.git
+git clone [https://github.com/tu_usuario/MyApplication.git](https://github.com/Gutierrez-16/App_android.git)
