@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,48 +12,46 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
+    EditText editTextUsername, editTextPassword;
+    Button buttonLogin, buttonRegister;
     DatabaseHelper dbHelper;
-    EditText usernameField, passwordField;
-    Button loginButton, registerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        editTextUsername = findViewById(R.id.edit_username);
+        editTextPassword = findViewById(R.id.edit_password);
+        buttonLogin = findViewById(R.id.btn_login);
+        buttonRegister = findViewById(R.id.btn_register);
         dbHelper = new DatabaseHelper(this);
-        usernameField = findViewById(R.id.edit_username);
-        passwordField = findViewById(R.id.edit_password);
-        loginButton = findViewById(R.id.btn_login);
-        registerButton = findViewById(R.id.btn_register);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = usernameField.getText().toString();
-                String password = passwordField.getText().toString();
-                if (dbHelper.checkUser(username, password)) {
-                    int userId = dbHelper.getUserId(username);
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                String username = editTextUsername.getText().toString();
+                String password = editTextPassword.getText().toString();
+
+                Cursor cursor = dbHelper.getUser(username, password);
+                if (cursor.moveToFirst()) {
+                    int userId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
+                    Intent intent = new Intent(LoginActivity.this, UserActivity.class);
                     intent.putExtra("USER_ID", userId);
                     startActivity(intent);
                     finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
                 }
+                cursor.close();
             }
         });
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = usernameField.getText().toString();
-                String password = passwordField.getText().toString();
-                if (dbHelper.addUser(username, password)) {
-                    Toast.makeText(LoginActivity.this, "User Registered", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(LoginActivity.this, "User Registration Failed", Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
             }
         });
     }

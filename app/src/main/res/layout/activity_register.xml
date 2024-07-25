@@ -8,24 +8,33 @@
         android:id="@+id/edit_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username" />
+        android:hint="Username"
+        android:inputType="text"/>
 
     <EditText
         android:id="@+id/edit_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
-        android:layout_below="@id/edit_username"
-        android:layout_marginTop="16dp"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:layout_below="@+id/edit_username"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/edit_confirm_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm Password"
+        android:inputType="textPassword"
+        android:layout_below="@+id/edit_password"
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/btn_register"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Register"
-        android:layout_below="@id/edit_password"
-        android:layout_marginTop="16dp" />
+        android:layout_below="@+id/edit_confirm_password"
+        android:layout_marginTop="16dp"/>
 
 </RelativeLayout>
-
