@@ -93,9 +93,9 @@ public class MainActivity extends AppCompatActivity {
         coursesList.clear();
         Cursor cursor = dbHelper.getAllCourses(userId);
         while (cursor.moveToNext()) {
+            int courseId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
             String courseName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_COURSE_NAME));
-            String creatorName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERNAME)); // Asumiendo que se agrega el nombre de usuario en el cursor
-            coursesList.add(courseName + " (Created by: " + creatorName + ")");
+            coursesList.add(courseName + " (ID: " + courseId + ")");
         }
         cursor.close();
         coursesAdapter.notifyDataSetChanged();
@@ -105,8 +105,9 @@ public class MainActivity extends AppCompatActivity {
         usersList.clear();
         Cursor cursor = dbHelper.getAllUsers();
         while (cursor.moveToNext()) {
+            int userId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
             String username = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERNAME));
-            usersList.add(username);
+            usersList.add(username + " (ID: " + userId + ")");
         }
         cursor.close();
         usersAdapter.notifyDataSetChanged();
@@ -139,27 +140,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showUpdateDeleteCourseDialog(int position) {
-        final String courseName = coursesList.get(position).split(" \\(Created by: ")[0]; // Para obtener solo el nombre del curso
+        final String courseName = coursesList.get(position).split(" \\(ID: ")[0];
+        final int courseId = Integer.parseInt(coursesList.get(position).split(" \\(ID: ")[1].replace(")", ""));
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Update or Delete Course");
+        if (dbHelper.isCourseCreatedByUser(courseId, userId)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Update or Delete Course");
 
-        String[] options = {"Update", "Delete"};
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) { // Update
-                    showUpdateCourseDialog(courseName);
-                } else if (which == 1) { // Delete
-                    showDeleteCourseConfirmation(courseName);
+            String[] options = {"Update", "Delete"};
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == 0) { // Update
+                        showUpdateCourseDialog(courseId, courseName);
+                    } else if (which == 1) { // Delete
+                        showDeleteCourseConfirmation(courseId, courseName);
+                    }
                 }
-            }
-        });
+            });
 
-        builder.show();
+            builder.show();
+        } else {
+            Toast.makeText(this, "You do not have permission to modify this course", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void showUpdateCourseDialog(final String oldCourseName) {
+    private void showUpdateCourseDialog(final int courseId, final String oldCourseName) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Update Course");
 
@@ -173,16 +179,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String newCourseName = editCourseName.getText().toString();
                 if (!newCourseName.isEmpty()) {
-                    Cursor cursor = dbHelper.getAllCourses(userId);
-                    while (cursor.moveToNext()) {
-                        int courseId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
-                        String currentCourseName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_COURSE_NAME));
-                        if (currentCourseName.equals(oldCourseName)) {
-                            dbHelper.updateCourse(courseId, newCourseName);
-                            break;
-                        }
-                    }
-                    cursor.close();
+                    dbHelper.updateCourse(courseId, newCourseName);
                     loadCourses();
                 } else {
                     Toast.makeText(MainActivity.this, "Course name cannot be empty", Toast.LENGTH_SHORT).show();
@@ -195,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void showDeleteCourseConfirmation(final String courseName) {
+    private void showDeleteCourseConfirmation(final int courseId, final String courseName) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Delete Course");
         builder.setMessage("Are you sure you want to delete the course \"" + courseName + "\"?");
@@ -203,16 +200,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Cursor cursor = dbHelper.getAllCourses(userId);
-                while (cursor.moveToNext()) {
-                    int courseId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
-                    String currentCourseName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_COURSE_NAME));
-                    if (currentCourseName.equals(courseName)) {
-                        dbHelper.deleteCourse(courseId);
-                        break;
-                    }
-                }
-                cursor.close();
+                dbHelper.deleteCourse(courseId);
                 loadCourses();
             }
         });
@@ -223,24 +211,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showUpdateDeleteUserDialog(int position) {
-        final String username = usersList.get(position);
+        final String username = usersList.get(position).split(" \\(ID: ")[0];
+        final int userIdToUpdate = Integer.parseInt(usersList.get(position).split(" \\(ID: ")[1].replace(")", ""));
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Update or Delete User");
+        if (userIdToUpdate == userId) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Update or Delete User");
 
-        String[] options = {"Update", "Delete"};
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) { // Update
-                    showUpdateUserDialog(username);
-                } else if (which == 1) { // Delete
-                    showDeleteUserConfirmation(username);
+            String[] options = {"Update", "Delete"};
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == 0) { // Update
+                        showUpdateUserDialog(username);
+                    } else if (which == 1) { // Delete
+                        showDeleteUserConfirmation(username);
+                    }
                 }
-            }
-        });
+            });
 
-        builder.show();
+            builder.show();
+        } else {
+            Toast.makeText(this, "You can only modify your own user account", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showUpdateUserDialog(final String oldUsername) {

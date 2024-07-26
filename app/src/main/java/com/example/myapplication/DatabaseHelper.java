@@ -57,7 +57,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-
     public void updateUser(int id, String username, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -101,18 +100,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public boolean isCourseCreatedByUser(int courseId, int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_COURSES + " WHERE " + COLUMN_ID + " = ? AND " + COLUMN_USER_ID + " = ?", new String[]{String.valueOf(courseId), String.valueOf(userId)});
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        return exists;
+    }
+
+    public boolean isUserCreatedByUser(int userId, int creatorId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_ID + " = ? AND creator_id = ?", new String[]{String.valueOf(userId), String.valueOf(creatorId)});
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        return exists;
+    }
+
     public Cursor getAllCourses(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT courses." + COLUMN_ID + ", " + COLUMN_COURSE_NAME + ", " + COLUMN_USERNAME +
+        String query = "SELECT " + TABLE_COURSES + "." + COLUMN_ID + ", " + COLUMN_COURSE_NAME + ", " + COLUMN_USERNAME +
                 " FROM " + TABLE_COURSES +
-                " JOIN " + TABLE_USERS + " ON courses." + COLUMN_USER_ID + " = users." + COLUMN_ID +
-                " WHERE courses." + COLUMN_USER_ID + " = " + userId;
+                " JOIN " + TABLE_USERS + " ON " + TABLE_COURSES + "." + COLUMN_USER_ID + " = " + TABLE_USERS + "." + COLUMN_ID +
+                " WHERE " + TABLE_COURSES + "." + COLUMN_USER_ID + " = " + userId;
         return db.rawQuery(query, null);
     }
+
     public Cursor getUser(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + " = ? AND " + COLUMN_PASSWORD + " = ?";
         return db.rawQuery(query, new String[]{username, password});
     }
-
 }
