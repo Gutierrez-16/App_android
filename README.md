@@ -1,51 +1,39 @@
+
 # MyApplication
 
-## Descripción
+## Description
 
-Esta es una aplicación Android que implementa operaciones CRUD (Crear, Leer, Actualizar, Eliminar) para la gestión de usuarios y cursos utilizando SQLite como base de datos local.
+This is an Android application that implements CRUD (Create, Read, Update, Delete) operations for managing users and courses using SQLite as a local database.
 
-## Características
+## Features
 
-- Registro e inicio de sesión de usuarios.
-- Gestión de usuarios: crear, leer, actualizar y eliminar usuarios.
-- Gestión de cursos: crear, leer, actualizar y eliminar cursos.
-- Relación entre usuarios y cursos: un usuario puede crear varios cursos, y solo el usuario que creó el curso puede actualizarlo o eliminarlo.
+- User registration and login.
+- User management: create, read, update, and delete users.
+- Course management: create, read, update, and delete courses.
+- Relationship between users and courses: a user can create multiple courses, and only the user who created a course can update or delete it.
 
+## Database Configuration
 
-## Configuración de la Base de Datos
+The **DatabaseHelper.java** file contains the setup and CRUD operations for the `users` and `courses` tables.
 
-El archivo **DatabaseHelper.java** contiene la configuración y las operaciones CRUD para las tablas `users` y `courses`.
+## How to Run the Project
 
-### Tablas
-
-- **users**:
-  - `_id`: ID del usuario (clave primaria).
-  - `username`: Nombre de usuario.
-  - `password`: Contraseña del usuario.
-
-- **courses**:
-  - `_id`: ID del curso (clave primaria).
-  - `course_name`: Nombre del curso.
-  - `user_id`: ID del usuario que creó el curso (clave foránea).
-
-### Operaciones CRUD
-
-- **Usuarios**:
-  - `addUser`: Agregar un nuevo usuario.
-  - `updateUser`: Actualizar un usuario existente.
-  - `deleteUser`: Eliminar un usuario.
-  - `getAllUsers`: Obtener todos los usuarios.
-  - `getUser`: Obtener un usuario por nombre de usuario y contraseña.
-
-- **Cursos**:
-  - `addCourse`: Agregar un nuevo curso.
-  - `updateCourse`: Actualizar un curso existente.
-  - `deleteCourse`: Eliminar un curso.
-  - `getAllCourses`: Obtener todos los cursos de un usuario específico.
-  - `isCourseCreatedByUser`: Verificar si un curso fue creado por un usuario específico.
-
-## Cómo Ejecutar el Proyecto
-
-1. Clona el repositorio:
+1. Clone the repository:
    ```bash
    git clone https://github.com/Gutierrez-16/App_android.git
+   ```
+
+2. Open the project in Android Studio.
+
+3. Build and run the project on an Android device or emulator.
+
+## Application Screenshots
+
+### Login Screen
+
+![Login Screen](./login.png)
+
+### Sign-Up Screen
+
+![Sign-Up Screen](./sign%20up.png)
+```
