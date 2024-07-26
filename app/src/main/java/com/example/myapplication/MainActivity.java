@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = dbHelper.getAllCourses(userId);
         while (cursor.moveToNext()) {
             String courseName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_COURSE_NAME));
-            coursesList.add(courseName);
+            String creatorName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERNAME)); // Asumiendo que se agrega el nombre de usuario en el cursor
+            coursesList.add(courseName + " (Created by: " + creatorName + ")");
         }
         cursor.close();
         coursesAdapter.notifyDataSetChanged();
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showUpdateDeleteCourseDialog(int position) {
-        final String courseName = coursesList.get(position);
+        final String courseName = coursesList.get(position).split(" \\(Created by: ")[0]; // Para obtener solo el nombre del curso
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Update or Delete Course");
@@ -227,15 +228,55 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Update or Delete User");
 
-        String[] options = {"Delete"};
+        String[] options = {"Update", "Delete"};
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) { // Delete
+                if (which == 0) { // Update
+                    showUpdateUserDialog(username);
+                } else if (which == 1) { // Delete
                     showDeleteUserConfirmation(username);
                 }
             }
         });
+
+        builder.show();
+    }
+
+    private void showUpdateUserDialog(final String oldUsername) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Update User");
+
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_add_update_user, null);
+        EditText editUsername = view.findViewById(R.id.edit_username);
+        EditText editPassword = view.findViewById(R.id.edit_password);
+        editUsername.setText(oldUsername);
+        builder.setView(view);
+
+        builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newUsername = editUsername.getText().toString();
+                String newPassword = editPassword.getText().toString();
+                if (!newUsername.isEmpty() && !newPassword.isEmpty()) {
+                    Cursor cursor = dbHelper.getAllUsers();
+                    while (cursor.moveToNext()) {
+                        int userId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
+                        String currentUsername = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERNAME));
+                        if (currentUsername.equals(oldUsername)) {
+                            dbHelper.updateUser(userId, newUsername, newPassword);
+                            break;
+                        }
+                    }
+                    cursor.close();
+                    loadUsers();
+                } else {
+                    Toast.makeText(MainActivity.this, "Username and password cannot be empty", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", null);
 
         builder.show();
     }
