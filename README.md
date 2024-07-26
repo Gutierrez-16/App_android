@@ -31,9 +31,9 @@ The **DatabaseHelper.java** file contains the setup and CRUD operations for the 
 
 ### Login Screen
 
-![Login Screen](./login.png)
+<img src="./login.png" width="200" />
 
 ### Sign-Up Screen
 
-![Sign-Up Screen](./sign%20up.png)
-```
+<img src="./sign up.png" width="200" />
+
