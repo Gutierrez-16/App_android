@@ -15,29 +15,30 @@
         android:layout_marginTop="20dp" />
 
     <Button
-        android:id="@+id/btn_logout"
+        android:id="@+id/btn_view_users"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Logout"
+        android:text="View Users"
         android:layout_below="@id/btn_add_course"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
 
     <Button
-        android:id="@+id/btn_view_users"
+        android:id="@+id/btn_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="View Users"
-        android:layout_below="@id/btn_logout"
+        android:text="Logout"
+        android:layout_below="@id/btn_view_users"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
 
     <ListView
         android:id="@+id/list_view_courses"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_view_users"
+        android:layout_height="0dp"
+        android:layout_below="@id/btn_logout"
         android:layout_marginTop="20dp"
+        android:layout_above="@id/list_view_users"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp" />
 
@@ -45,8 +46,9 @@
         android:id="@+id/list_view_users"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/list_view_courses"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="20dp"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp" />
+
 </RelativeLayout>

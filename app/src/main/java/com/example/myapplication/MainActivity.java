@@ -58,10 +58,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        listViewCourses.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        buttonViewUsers.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showUpdateDeleteCourseDialog(position);
+            public void onClick(View v) {
+                loadUsers();
             }
         });
 
@@ -74,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonViewUsers.setOnClickListener(new View.OnClickListener() {
+        listViewCourses.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                loadUsers();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showUpdateDeleteCourseDialog(position);
             }
         });
 
