@@ -76,6 +76,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(userId)}, null, null, null);
     }
 
+    public Cursor getAllUsers() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.query(TABLE_USERS, null, null, null, null, null, null);
+    }
+
     public int updateCourse(int id, String courseName) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -87,5 +92,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void deleteCourse(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_COURSES, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
+    }
+
+    public void deleteUser(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_USERS, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
     }
 }

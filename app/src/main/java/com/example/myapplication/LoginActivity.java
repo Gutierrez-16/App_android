@@ -30,20 +30,24 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = editTextUsername.getText().toString();
-                String password = editTextPassword.getText().toString();
+                String username = editTextUsername.getText().toString().trim();
+                String password = editTextPassword.getText().toString().trim();
 
-                Cursor cursor = dbHelper.getUser(username, password);
-                if (cursor.moveToFirst()) {
-                    int userId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
-                    Intent intent = new Intent(LoginActivity.this, UserActivity.class);
-                    intent.putExtra("USER_ID", userId);
-                    startActivity(intent);
-                    finish();
+                if (username.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "Please enter both username and password", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                    Cursor cursor = dbHelper.getUser(username, password);
+                    if (cursor.moveToFirst()) {
+                        int userId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID));
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("USER_ID", userId);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                    }
+                    cursor.close();
                 }
-                cursor.close();
             }
         });
 

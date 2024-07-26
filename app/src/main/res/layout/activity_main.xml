@@ -1,43 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/tv_username"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btn_add_course"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Username"
-        android:textSize="18sp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"/>
+        android:text="Add Course" />
+
+    <ListView
+        android:id="@+id/list_view_courses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
     <Button
-        android:id="@+id/btn_add_student"
-        android:layout_width="wrap_content"
+        android:id="@+id/btn_view_users"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Student"
-        android:layout_below="@id/tv_username"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"/>
+        android:text="View Users" />
+
+    <ListView
+        android:id="@+id/list_view_users"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/btn_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        android:layout_below="@id/btn_add_student"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"/>
-
-    <ListView
-        android:id="@+id/list_view_students"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:dividerHeight="1dp"
-        android:layout_below="@id/btn_logout"
-        android:layout_marginTop="16dp"/>
-
-</RelativeLayout>
+        android:layout_height="wrap_content"
+        android:text="Logout" />
+</LinearLayout>

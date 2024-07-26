@@ -20,11 +20,15 @@
 
         <!-- Register activity -->
         <activity android:name=".RegisterActivity"
-            android:exported="false" />
+            android:exported="true" />
 
         <!-- User activity -->
         <activity android:name=".UserActivity"
-            android:exported="false" />
+            android:exported="true" />
+
+        <!-- Main activity -->
+        <activity android:name=".MainActivity"
+            android:exported="true" />
 
     </application>
 
