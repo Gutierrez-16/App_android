@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +19,9 @@ public class RegisterActivity extends AppCompatActivity {
     DatabaseHelper dbHelper;
     EditText editUsername, editPassword, editConfirmPassword;
     Button buttonRegister, buttonBack;
+    ImageButton btnTogglePassword, btnToggleConfirmPassword;
+    boolean isPasswordVisible = false;
+    boolean isConfirmPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +34,8 @@ public class RegisterActivity extends AppCompatActivity {
         editConfirmPassword = findViewById(R.id.edit_confirm_password);
         buttonRegister = findViewById(R.id.btn_register);
         buttonBack = findViewById(R.id.btn_back);
+        btnTogglePassword = findViewById(R.id.btn_toggle_password);
+        btnToggleConfirmPassword = findViewById(R.id.btn_toggle_confirm_password);
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -81,6 +89,22 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        btnTogglePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                togglePasswordVisibility(editPassword, btnTogglePassword);
+                isPasswordVisible = !isPasswordVisible;
+            }
+        });
+
+        btnToggleConfirmPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                togglePasswordVisibility(editConfirmPassword, btnToggleConfirmPassword);
+                isConfirmPasswordVisible = !isConfirmPasswordVisible;
+            }
+        });
     }
 
     private void checkFieldsForEmptyValues() {
@@ -89,5 +113,16 @@ public class RegisterActivity extends AppCompatActivity {
         String confirmPassword = editConfirmPassword.getText().toString().trim();
 
         buttonRegister.setEnabled(!username.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty());
+    }
+
+    private void togglePasswordVisibility(EditText editText, ImageButton button) {
+        if (editText.getTransformationMethod() instanceof PasswordTransformationMethod) {
+            editText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            button.setImageResource(R.drawable.ic_eye_open);
+        } else {
+            editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            button.setImageResource(R.drawable.ic_eye_closed);
+        }
+        editText.setSelection(editText.length());
     }
 }
